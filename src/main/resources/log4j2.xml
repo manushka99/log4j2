@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Appenders>
+        <Console name="consoleAppender" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d %p %c [%t] %m%n"/>
+        </Console>
+
+        <Routing name="Routing">
+            <Routes pattern="$${ctx:FILE_NAME}">
+                <Route>
+                    <RollingFile append = "true"
+                                 name="Rolling-${ctx:FILE_NAME}"
+                                 fileName="front/log/${ctx:FILE_NAME}.html"
+                                 filePattern="front/log/${ctx:FILE_NAME}%i.html"
+                                 >
+                        <HTMLLayout charset="UTF-8" title="Howtodoinjava Info Logs" locationInfo="true" />
+                        <PatternLayout>
+                            <pattern>%d %p %c [%t] %m%n</pattern>
+                        </PatternLayout>
+                        <SizeBasedTriggeringPolicy size="10 KB" />
+                    </RollingFile>
+                </Route>
+                <Route ref="consoleAppender" key="${ctx:FILE_NAME}"/>
+            </Routes>
+            <IdlePurgePolicy timeToLive="15" timeUnit="minutes"/>
+        </Routing>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="Routing"/>
+        </Root>
+    </Loggers>
+</Configuration>
